@@ -7,8 +7,8 @@ router.use(bodyParser.json());
 
 router.get('/all', userController.getUsers);
 router.post('/new', userController.createUser);
-// router.put('/user/update/', staffController.updateStaff);
-// router.delete('/user/delete/', staffController.deleteStaff);
+router.put('/update/:id', userController.updateUser);
+router.delete('/delete/:id', userController.deleteUser);
 
 
 module.exports = router;

@@ -24,8 +24,37 @@ async function getTrains(req, res) {
     }
 }
 
+// Update a train
+async function updateTrain(req, res) {
+    try {
+        const { train_id, train_name, departure_time, arrival_time } = req.body;
+        const updatedTrain = await Train.update(
+            { train_name, departure_time, arrival_time },
+            { where: { train_id } }
+        );
+        res.status(200).json({ updatedTrain });
+    } catch (error) {
+        console.error('Error updating train:', error);
+        res.status(500).json({ error: 'Failed to update train' });
+    }
+}
+
+// Delete a train 
+async function deleteTrain(req, res) {
+    try {
+        const { train_id } = req.body;
+        const deletedTrain = await Train.destroy({ where: { train_id } });
+        res.status(200).json({ deletedTrain });
+    } catch (error) {
+        console.error('Error deleting train:', error);
+        res.status(500).json({ error: 'Failed to delete train' });
+    }
+}
+
 
 module.exports = {
     createTrain, 
-    getTrains
+    getTrains, 
+    updateTrain, 
+    deleteTrain
 }
