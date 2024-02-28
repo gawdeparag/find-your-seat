@@ -2,6 +2,8 @@ const bodyParser = require('body-parser');
 const express = require('express');
 require('dotenv').config();
 
+const app = express();
+
 const userRoutes = require('./routes/user');
 const User = require('./models/User');
 
@@ -13,8 +15,6 @@ const Seat = require('./models/Seat');
 
 const reservationRoutes = require('./routes/reservation');
 const Reservation = require('./models/Reservation');
-
-const app = express();
 
 app.use(bodyParser.json());
 

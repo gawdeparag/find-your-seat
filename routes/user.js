@@ -6,7 +6,10 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 
 router.get('/all', userController.getUsers);
-router.post('/new', userController.createUser);
+
+router.post('/signup', userController.createUser);
+router.post('/login', userController.loginUser);
+
 router.put('/update/:id', userController.updateUser);
 router.delete('/delete/:id', userController.deleteUser);
 

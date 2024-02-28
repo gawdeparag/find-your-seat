@@ -1,16 +1,44 @@
 // controllers/userController.js
 const User = require('../models/User');
+const { isEmail } = require('validator');
 
-// Create a new user
+// "Create a new user / Signup"
 async function createUser(req, res) {
   try {
+    if(!isEmail(req.body.email)) {
+      return res.status(400).json({ error: 'Invalid email' });
+    }
+    if(req.body.username.length < 4){
+      return res.status(400).json({ error: 'Username must be at least 4 characters long' });
+    }
+    if(req.body.password.length < 6){
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
     const { username, password, email } = req.body;
+    if (User.findOne({ where: { username, email } })) {
+      return res.status(400).json({ error: 'This User already exists' });
+    }
     const newUser = { username, password, email };
     const user = await User.create(newUser);
     res.status(201).json({ user });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Failed to create user' });
+  }
+}
+
+// Login for existing users 
+async function loginUser(req, res) {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ where: { username, password } });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+    res.status(200).json({ message: "User Logged In successfully!" });
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ error: 'Failed to log in' });
   }
 }
 
@@ -56,6 +84,7 @@ async function deleteUser(req, res) {
 module.exports = {
   createUser,
   getUsers,
+  loginUser,
   updateUser,
   deleteUser
 };
