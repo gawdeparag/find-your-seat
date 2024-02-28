@@ -1,4 +1,5 @@
 const Seat = require('../models/Seat');
+const Reservation = require('../models/Reservation');
 
 // create a seat in a train
 async function createSeat(req, res) {
@@ -17,6 +18,22 @@ async function createSeat(req, res) {
 async function getSeats(req, res) {
     try {
         const seats = await Seat.findAll({ where: { train_id: req.params.id } });
+        console.log(seats.length);
+        var seatsInTrain = {
+            train_id: req.params.id,
+            total_seats: seats.length
+        }
+        res.status(200).json(seatsInTrain);
+    } catch (error) {
+        console.error('Error getting seats:', error);
+        res.status(500).json({ error: 'Failed to get seats' });
+    }
+}
+
+// get all available seats in a train
+async function getAvailableSeats(req, res) {
+    try {
+        const seats = await Seat.findAll({ where: { train_id: req.params.id, status: 'Available' } });
         console.log(seats.length);
         var seatsInTrain = {
             train_id: req.params.id,
@@ -56,9 +73,22 @@ async function deleteSeat(req, res) {
     }
 }
 
+// get reserved seats for a user 
+async function getReservedSeats(req, res) {
+    try {
+        const reservedSeats = await Reservation.findAll({ where: { user_id: req.params.id } });
+        res.status(200).json({ reservedSeats: reservedSeats.length });
+    } catch (error) {
+        console.error('Error getting reserved seats:', error);
+        res.status(500).json({ error: 'Failed to get reserved seats' });
+    }
+}
+
 module.exports = {
     createSeat,
     getSeats, 
     updateSeat, 
-    deleteSeat
+    deleteSeat, 
+    getAvailableSeats,
+    getReservedSeats
 }

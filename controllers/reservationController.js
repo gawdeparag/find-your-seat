@@ -1,4 +1,5 @@
 const Reservation = require('../models/Reservation');
+const Seat = require('../models/Seat');
 
 // create a reservation
 async function createReservation(req, res) {
@@ -6,6 +7,7 @@ async function createReservation(req, res) {
         const { user_id, train_id, seat_id, reservation_date } = req.body;
         const newReservation = { user_id, train_id, seat_id, reservation_date };
         const createdReservation = await Reservation.create(newReservation);
+        await Seat.update({ status: 'Reserved' }, { where: { seat_id } });
         res.status(201).json({ createdReservation });
     } catch (error) {
         console.error('Error creating reservation:', error);

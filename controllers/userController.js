@@ -1,6 +1,7 @@
 // controllers/userController.js
 const User = require('../models/User');
 const { isEmail } = require('validator');
+const jwt = require('jsonwebtoken');
 
 // "Create a new user / Signup"
 async function createUser(req, res) {
@@ -35,6 +36,8 @@ async function loginUser(req, res) {
     if (!user) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
     res.status(200).json({ message: "User Logged In successfully!" });
   } catch (error) {
     console.error('Error logging in:', error);
@@ -52,7 +55,6 @@ async function getUsers(req, res) {
     res.status(500).json({ error: 'Failed to get users' });
   }
 }
-
 
 // update an user
 async function updateUser(req, res) {
