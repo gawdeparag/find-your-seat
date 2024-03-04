@@ -36,9 +36,11 @@ async function loginUser(req, res) {
     if (!user) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
-    res.status(200).json({ message: "User Logged In successfully!" });
+    // console.log(user.id);
+    const token = createToken(user.id, user.email);
+    console.log(token);
+    res.cookie('jwt', token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: maxAge*1000 });
+    res.status(200).json({ user_id: user.id, message: "User Logged In successfully!" });
   } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ error: 'Failed to log in' });
@@ -82,6 +84,10 @@ async function deleteUser(req, res) {
   }
 }
 
+const maxAge = 1 * 24 * 60 * 60;
+const createToken = (id, email) => {
+    return jwt.sign({ id, email }, process.env.JWT_SECRET, { expiresIn: maxAge })
+}
 
 module.exports = {
   createUser,

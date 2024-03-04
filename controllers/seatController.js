@@ -76,8 +76,11 @@ async function deleteSeat(req, res) {
 // get reserved seats for a user 
 async function getReservedSeats(req, res) {
     try {
-        const reservedSeats = await Reservation.findAll({ where: { user_id: req.params.id } });
-        res.status(200).json({ reservedSeats: reservedSeats.length });
+        const reservedSeats = await Reservation.findAll({ where: { user_id: req.user_id, reservation_date: req.body.reservation_date } });
+        if(!reservedSeats){
+            return res.status(200).json({ message: "No reserved seats found for this date" });
+        }
+        res.status(200).json({ reservedSeats, total_reservations: reservedSeats.length });
     } catch (error) {
         console.error('Error getting reserved seats:', error);
         res.status(500).json({ error: 'Failed to get reserved seats' });

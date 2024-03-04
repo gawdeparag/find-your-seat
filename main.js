@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
@@ -16,6 +17,7 @@ const Seat = require('./models/Seat');
 const reservationRoutes = require('./routes/reservation');
 const Reservation = require('./models/Reservation');
 
+app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use('/user', userRoutes);

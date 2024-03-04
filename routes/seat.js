@@ -5,10 +5,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({extended: false}));
 
 router.get('/train/:id', seatController.getSeats);
 router.get('/train/:id/available', seatController.getAvailableSeats);
-router.get('/reservation/:id', authMiddleware, seatController.getReservedSeats);
+router.get('/reservation', authMiddleware, seatController.getReservedSeats);
 
 router.post('/new', seatController.createSeat);
 
